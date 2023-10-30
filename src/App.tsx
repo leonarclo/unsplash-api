@@ -7,20 +7,24 @@ interface IPhotoCollection {
   id: string;
   title: string;
   description: string;
+  link: string;
+  tags: string[];
+  user: {
+    username: string;
+  };
 }
 
 function App() {
-  const [photoCollection, setPhotoCollection] =
-    useState<IPhotoCollection | null>(null);
+  const [photos, setPhotos] = useState<IPhotoCollection | null>(null);
   const [query, setQuery] = useState<string>("");
 
-  const searchPhotoCollections = () => {
+  const searchPhotoCollections = async () => {
     try {
-      axios
-        .get(
-          `https://api.unsplash.com/search/collections?page=1&query=${query}&client_id=pCGFLx6vvuhHlkpEKNukubGXoSsvvX9VD8mrwzphIBU`
-        )
-        .then((response) => console.log(response.data.results[0].cover_photo));
+      const response = await axios.get(
+        `https://api.unsplash.com/search/photos?page=1&query=${query}&client_id=pCGFLx6vvuhHlkpEKNukubGXoSsvvX9VD8mrwzphIBU`
+      );
+      setPhotos(response.data.results);
+      console.log(photos);
     } catch (error) {
       console.log(error);
     }
