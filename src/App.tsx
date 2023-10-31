@@ -1,15 +1,7 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Image,
-  Input,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, Image, Input, Link } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
-import CardPhoto from "./components/CardPhoto";
 
 interface IPhotoCollection {
   id: string;
@@ -19,6 +11,9 @@ interface IPhotoCollection {
     full: string;
     regular: string;
     small: string;
+  };
+  links: {
+    download: string;
   };
   tags: string[];
   user: {
@@ -58,13 +53,7 @@ function App() {
         borderColor={"white"}
       >
         <Box maxWidth={"container.xl"} m={"auto"}>
-          <Text
-            fontSize={32}
-            color={"white"}
-            fontWeight={"bold"}
-            textAlign={"center"}
-            mb={8}
-          >
+          <Text fontSize={32} color={"white"} fontWeight={"bold"} px={8} mb={8}>
             Olá, precisa de inspiração hoje?
           </Text>
           <FormControl display={"flex"} gap={10} p={8}>
@@ -76,11 +65,13 @@ function App() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             ></Input>
-            <Button onClick={searchPhotoCollections}>Procurar</Button>
+            <Button onClick={searchPhotoCollections} width={300}>
+              Procurar
+            </Button>
           </FormControl>
         </Box>
       </Box>
-      <Box backgroundColor={"blackAlpha.800"}>
+      <Box backgroundColor={"blackAlpha.800"} flex={1}>
         <Box
           maxWidth={"container.xl"}
           border={"white"}
@@ -93,7 +84,7 @@ function App() {
         >
           {photos?.map((photo) => (
             <Box key={photo.id} rounded={"sm"}>
-              <Box mb={4} overflow={"hidden"}>
+              <Box mb={8} overflow={"hidden"}>
                 <Text
                   textAlign={"center"}
                   color={"black"}
@@ -104,11 +95,17 @@ function App() {
                 >
                   {photo.alt_description}
                 </Text>
-                <Image
-                  src={photo.urls.small}
-                  borderBottomRadius={10}
-                  w={"100%"}
-                />
+                <Image src={photo.urls.small} w={"100%"} />
+                <Box>
+                  <Link
+                    href={`${photo.links.download}&force=true`}
+                    download={true}
+                  >
+                    <Button w={"100%"} borderTopRadius={0}>
+                      Download
+                    </Button>
+                  </Link>
+                </Box>
               </Box>
             </Box>
           ))}
