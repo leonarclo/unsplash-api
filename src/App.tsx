@@ -1,13 +1,25 @@
-import { Box, Button, FormControl, Input, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  Image,
+  Input,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
+import CardPhoto from "./components/CardPhoto";
 
 interface IPhotoCollection {
   id: string;
-  title: string;
+  alt_description: string;
   description: string;
-  link: string;
+  urls: {
+    full: string;
+    regular: string;
+    small: string;
+  };
   tags: string[];
   user: {
     username: string;
@@ -15,7 +27,7 @@ interface IPhotoCollection {
 }
 
 function App() {
-  const [photos, setPhotos] = useState<IPhotoCollection | null>(null);
+  const [photos, setPhotos] = useState<IPhotoCollection[] | null>(null);
   const [query, setQuery] = useState<string>("");
 
   const searchPhotoCollections = async () => {
@@ -31,7 +43,13 @@ function App() {
   };
 
   return (
-    <Box display="flex" flexDirection={"column"} h="100vh" w="100vw">
+    <Box
+      display="flex"
+      flexDirection={"column"}
+      h="100vh"
+      w="100vw"
+      overflowX={"hidden"}
+    >
       <Box
         w="100%"
         backgroundColor={"blackAlpha.900"}
@@ -39,7 +57,7 @@ function App() {
         borderBottom={"4px"}
         borderColor={"white"}
       >
-        <Box w={"container.xl"} m={"auto"}>
+        <Box maxWidth={"container.xl"} m={"auto"}>
           <Text
             fontSize={32}
             color={"white"}
@@ -49,22 +67,52 @@ function App() {
           >
             Olá, precisa de inspiração hoje?
           </Text>
-          <FormControl display={"flex"} gap={10}>
+          <FormControl display={"flex"} gap={10} p={8}>
             <Input
+              flex={1}
               placeholder="O que você está procurando?"
               color={"white"}
               isRequired={true}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             ></Input>
-            <Button w={200} type="submit" onClick={searchPhotoCollections}>
-              Procurar
-            </Button>
+            <Button onClick={searchPhotoCollections}>Procurar</Button>
           </FormControl>
         </Box>
       </Box>
-      <Box width="100%" flex="1" backgroundColor={"blackAlpha.800"}>
-        <SimpleGrid border={"white"}></SimpleGrid>
+      <Box backgroundColor={"blackAlpha.800"}>
+        <Box
+          maxWidth={"container.xl"}
+          border={"white"}
+          mx={"auto"}
+          p={8}
+          sx={{
+            columnCount: [1, 2, 3],
+            columnGap: "12px",
+          }}
+        >
+          {photos?.map((photo) => (
+            <Box key={photo.id} rounded={"sm"}>
+              <Box mb={4} overflow={"hidden"}>
+                <Text
+                  textAlign={"center"}
+                  color={"black"}
+                  fontWeight={"bold"}
+                  textTransform={"capitalize"}
+                  backgroundColor={"white"}
+                  borderTopRadius={10}
+                >
+                  {photo.alt_description}
+                </Text>
+                <Image
+                  src={photo.urls.small}
+                  borderBottomRadius={10}
+                  w={"100%"}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );
