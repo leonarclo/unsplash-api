@@ -49,16 +49,13 @@ function App() {
   };
 
   useEffect(() => {
-    searchPhotoCollections();
-  }, [currentPage]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [query]);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+      searchPhotoCollections();
       console.log(currentPage);
     }
   };
@@ -66,6 +63,7 @@ function App() {
   const handleNextPage = (lastPage: number) => {
     if (currentPage < lastPage) {
       setCurrentPage(currentPage + 1);
+      searchPhotoCollections();
       console.log(currentPage);
     }
   };
