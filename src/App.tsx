@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, FormControl, Image, Input, Link } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  Image,
+  Input,
+  Link,
+  Spinner,
+} from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -29,7 +37,6 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const searchPhotoCollections = async () => {
     try {
@@ -42,7 +49,7 @@ function App() {
       setTotalPages(response.data.total_pages);
       console.log(response.data.results);
     } catch (error) {
-      setError("An error occurred while fetching photos.");
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -87,9 +94,15 @@ function App() {
           <Text fontSize={32} color={"white"} fontWeight={"bold"} px={8} mb={8}>
             Olá, precisa de inspiração hoje?
           </Text>
-          <FormControl display={"flex"} gap={10} p={8}>
+          <FormControl
+            display={"flex"}
+            flexDirection={["column", "column", "row"]}
+            gap={10}
+            p={8}
+          >
             <Input
-              flex={1}
+              flex={3}
+              p={4}
               placeholder="O que você está procurando?"
               color={"white"}
               isRequired={true}
@@ -97,13 +110,13 @@ function App() {
               onChange={(event) => setQuery(event.target.value)}
               autoFocus
             ></Input>
-            <Button onClick={searchPhotoCollections} width={300}>
+            <Button onClick={searchPhotoCollections} flex={1} p={4}>
               Procurar
             </Button>
           </FormControl>
         </Box>
       </Box>
-      {!loading && (
+      {!loading ? (
         <Box backgroundColor={"blackAlpha.800"} flex={1}>
           {photos &&
             (photos?.length >= 1 ? (
@@ -170,6 +183,10 @@ function App() {
                 Sem resultados :c
               </Text>
             ))}
+        </Box>
+      ) : (
+        <Box textAlign="center" py={4}>
+          <Spinner size="xl" color="teal.500" />
         </Box>
       )}
     </Box>
